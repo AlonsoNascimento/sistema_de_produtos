@@ -1,4 +1,4 @@
-<?php 
+<?php
 include 'produtos_controller.php';
 
 session_start();
@@ -28,7 +28,7 @@ if (isset($_GET['edit'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD de Produtos</title>
+    <title>Cadastro de Produtos</title>
 
     <!-- Link para o Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -41,7 +41,7 @@ if (isset($_GET['edit'])) {
             document.getElementById('modelo').value = '';
             document.getElementById('valorUnitario').value = '';
             document.getElementById('categoria').value = '';
-            document.getElementById('ativo').checked = false;
+            document.getElementById('ativo').value = '';
             document.getElementById('url_img').value = '';
             document.getElementById('id').value = '';
         }
@@ -82,10 +82,11 @@ if (isset($_GET['edit'])) {
             </div>
 
             <!-- Valor Unitário -->
-            <div class="form-group">
-                <label for="valorunitario">Valor Unitário:</label>
-                <input type="number" step="0.01" id="valorunitario" name="valorunitario" class="form-control" value="<?php echo $produtoToEdit['valorunitario'] ?? ''; ?>" required>
+            <div class="mb-3">
+                <label for="valorUnitario" class="form-label">Valor Unitário:</label>
+                <input type="number" step="0.01" id="valorUnitario" name="valorUnitario" class="form-control" value="<?php echo $produtoToEdit['valorUnitario'] ?? '0.00'; ?>" required>
             </div>
+
 
             <!-- Categoria -->
             <div class="mb-3">
@@ -94,9 +95,12 @@ if (isset($_GET['edit'])) {
             </div>
 
             <!-- Ativo -->
-            <div class="mb-3 form-check">
-                <input type="checkbox" id="ativo" name="ativo" class="form-check-input" <?php echo isset($produtoToEdit['ativo']) && $produtoToEdit['ativo'] ? 'checked' : ''; ?>>
-                <label for="ativo" class="form-check-label">Produto Ativo</label>
+            <div class="mb-3">
+                <label for="ativo" class="form-label">Ativo:</label>
+                <select id="ativo" name="ativo" class="form-control" required>
+                    <option value="1" <?php echo isset($produtoToEdit['ativo']) && $produtoToEdit['ativo'] == 1 ? 'selected' : ''; ?>>Sim</option>
+                    <option value="0" <?php echo isset($produtoToEdit['ativo']) && $produtoToEdit['ativo'] == 0 ? 'selected' : ''; ?>>Não</option>
+                </select>
             </div>
 
             <!-- URL da Imagem -->
@@ -120,12 +124,12 @@ if (isset($_GET['edit'])) {
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
                     <th>Categoria</th>
-                    <th>Valor</th>
+                    <th>Valor Unitário</th>
                     <th>Ativo</th>
-                    <th>Ações</th>
                     <th>Imagem</th>
-
                 </tr>
             </thead>
             <tbody>
@@ -134,9 +138,12 @@ if (isset($_GET['edit'])) {
                     <tr>
                         <td><?php echo $produto['id']; ?></td>
                         <td><?php echo $produto['nome']; ?></td>
+                        <td><?php echo $produto['marca']; ?></td>
+                        <td><?php echo $produto['modelo']; ?></td>
                         <td><?php echo $produto['categoria']; ?></td>
-                        <td>R$ <?php echo number_format($produto['valorUnitario'], 2, ',', '.'); ?></td>
+                        <td><?php echo number_format(floatval($produto['valorUnitario'] ?? 0), 2, ',', '.'); ?></td>                       
                         <td><?php echo $produto['ativo'] ? 'Sim' : 'Não'; ?></td>
+                        <td><img src="<?php echo $produto['url_img'] ?? 'caminho/para/imagem/default.jpg'; ?>" alt="Imagem do produto" width="100" height="100"></td>
                         <td>
                             <a href="?edit=<?php echo $produto['id']; ?>" class="btn btn-info btn-sm">Editar</a>
                             <a href="?delete=<?php echo $produto['id']; ?>" onclick="return confirm('Tem certeza que deseja excluir?');" class="btn btn-danger btn-sm">Excluir</a>

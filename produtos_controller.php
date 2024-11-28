@@ -4,8 +4,9 @@ include 'db.php';
 // Função para salvar um novo produto
 function saveProduto($nome, $descricao, $marca, $modelo, $valorUnitario, $categoria, $ativo, $url_img) {
     global $conn;
+    $valorUnitario = is_numeric($valorUnitario) ? floatval($valorUnitario) : 0.00;
     $stmt = $conn->prepare("INSERT INTO produtos (nome, descricao, marca, modelo, valorUnitario, categoria, ativo, url_img) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssdsis", $nome, $descricao, $marca, $modelo, $valorUnitario, $categoria, $ativo, $url_img);
+    $stmt->bind_param("ssssddis", $nome, $descricao, $marca, $modelo, $valorUnitario, $categoria, $ativo, $url_img);
     return $stmt->execute();
 }
 
@@ -28,6 +29,7 @@ function getProduto($id) {
 // Função para atualizar um produto existente
 function updateProduto($id, $nome, $descricao, $marca, $modelo, $valorUnitario, $categoria, $ativo, $url_img) {
     global $conn;
+    $valorUnitario = is_numeric($valorUnitario) ? floatval($valorUnitario) : 0.00;
     $stmt = $conn->prepare("UPDATE produtos SET nome = ?, descricao = ?, marca = ?, modelo = ?, valorUnitario = ?, categoria = ?, ativo = ?, url_img = ? WHERE id = ?");
     $stmt->bind_param("ssssdsisi", $nome, $descricao, $marca, $modelo, $valorUnitario, $categoria, $ativo, $url_img, $id);
     return $stmt->execute();
